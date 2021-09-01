@@ -23,7 +23,7 @@
 module polyphase_filter #(
     DATA_WIDTH = 16,
     COEFF_WIDTH = 16,
-    NOF_COEFFS_PER_FILTER = 2
+    NOF_COEFFS_PER_FILTER = 4
 )(
     input clk_data,
     input rst,
@@ -31,6 +31,8 @@ module polyphase_filter #(
     input data_in_valid,
     input signed [COEFF_WIDTH - 1: 0] coeff_a,
     input signed [COEFF_WIDTH - 1: 0] coeff_b,
+    input signed [COEFF_WIDTH - 1: 0] coeff_c,
+    input signed [COEFF_WIDTH - 1: 0] coeff_d,
     output signed [DATA_WIDTH - 1: 0] data_out
     );
     
@@ -40,10 +42,11 @@ module polyphase_filter #(
     reg signed [DATA_WIDTH - 1: 0] data_mem_b [0: NOF_COEFFS_PER_FILTER - 1];
     reg flag;
     reg signed [DATA_WIDTH - 1: 0] data_to_mult [0: NOF_COEFFS_PER_FILTER - 1];
+    reg signed [DATA_WIDTH * 2: 0] data_add_s0 [0: NOF_COEFFS_PER_FILTER - 1];
+    reg signed [DATA_WIDTH * 2 + 1: 0] data_add_s1;
     
     wire signed [DATA_WIDTH - 1: 0] coeffs_to_mult [0: NOF_COEFFS_PER_FILTER - 1];
     wire signed [DATA_WIDTH * 2 - 1: 0] data_out_from_mult [0: NOF_COEFFS_PER_FILTER - 1];
-    wire signed [DATA_WIDTH * 2: 0] data_mult_add;
     
     integer i;
     genvar m;
@@ -56,6 +59,8 @@ module polyphase_filter #(
     
     assign coeffs_to_mult[0] = coeff_a;
     assign coeffs_to_mult[1] = coeff_b;
+    assign coeffs_to_mult[2] = coeff_c;
+    assign coeffs_to_mult[3] = coeff_d;
     
     // filtering
     always @(posedge clk_data) begin
@@ -114,11 +119,32 @@ module polyphase_filter #(
         );
     end
     endgenerate
-
-    assign data_mult_add = data_out_from_mult[0] + data_out_from_mult[1];
+    
+    always @(posedge clk_data) begin
+        if (rst) begin
+            for (i = 0; i <= NOF_COEFFS_PER_FILTER - 1; i = i + 1) begin
+                data_add_s0[i] <= 'd0;
+            end
+        end
+        else if (data_in_valid_r) begin
+            for (i = 0; i <= NOF_COEFFS_PER_FILTER / 2 - 1; i = i + 1) begin
+                data_add_s0[i] <= data_out_from_mult[i * 2] + data_out_from_mult[i * 2 + 1];
+            end
+        end
+    end
+    
+    always @(posedge clk_data) begin
+        if (rst) begin
+            data_add_s1 <= 'd0;
+        end
+        else if (data_in_valid_r) begin
+            data_add_s1 <= data_add_s0[0] + data_add_s0[1];
+        end
+    end
+    
     
     // discard the low 15 bits to eliminate the effcet of expanding the coeffes by a factor of 2^15
-    assign data_out = {data_mult_add[32], data_mult_add[29: 15]};
+    assign data_out = {data_add_s1[33], data_add_s1[29: 15]};
     
     
 endmodule

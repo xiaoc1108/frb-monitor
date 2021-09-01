@@ -178,10 +178,10 @@ module butterfly #(
     end
     
     // discard the low 13 bits
-    assign yp_real = {yp_real_r[33], yp_real_r[13 +: 16]};
-    assign yp_imag = {yp_imag_r[33], yp_imag_r[13 +: 16]};
-    assign yq_real = {yq_real_r[33], yq_real_r[13 +: 16]};
-    assign yq_imag = {yq_imag_r[33], yq_imag_r[13 +: 16]};
+    assign yp_real = {yp_real_r[33], yp_real_r[13 +: 15]};
+    assign yp_imag = {yp_imag_r[33], yp_imag_r[13 +: 15]};
+    assign yq_real = {yq_real_r[33], yq_real_r[13 +: 15]};
+    assign yq_imag = {yq_imag_r[33], yq_imag_r[13 +: 15]};
     assign valid = en_r[11];
     
 endmodule

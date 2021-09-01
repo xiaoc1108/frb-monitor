@@ -27,7 +27,8 @@ module fft #(
 )(
     input clk_data,
     input rst,
-    input [DATA_BUS_WIDTH - 1: 0] data_in,
+    input [DATA_BUS_WIDTH - 1: 0] data_in_real,
+    input [DATA_BUS_WIDTH - 1: 0] data_in_imag,
     input data_in_valid,
     output [DATA_BUS_WIDTH - 1: 0] data_out_real,
     output [DATA_BUS_WIDTH - 1: 0] data_out_imag,
@@ -57,8 +58,7 @@ module fft #(
     endfunction
     
     function signed [DATA_WIDTH - 1: 0] get_wnr_real;
-        //input [clog2(NOF_FFT_POINT / 2) - 1: 0] index;
-        input [4: 0] index;
+        input [clog2(NOF_FFT_POINT / 2) - 1: 0] index;
         case (index)
             0: get_wnr_real = 'd8192;
             1: get_wnr_real = 'd8153;
@@ -187,76 +187,137 @@ module fft #(
     end
     endgenerate
    
-    assign xm_real[0][0] = data_in[0 * 16 +: 16];
-    assign xm_real[0][1] = data_in[32 * 16 +: 16];
-    assign xm_real[0][2] = data_in[16 * 16 +: 16];
-    assign xm_real[0][3] = data_in[48 * 16 +: 16];
-    assign xm_real[0][4] = data_in[8 * 16 +: 16];
-    assign xm_real[0][5] = data_in[40 * 16 +: 16];
-    assign xm_real[0][6] = data_in[24 * 16 +: 16];
-    assign xm_real[0][7] = data_in[56 * 16 +: 16];
-    assign xm_real[0][8] = data_in[4 * 16 +: 16];
-    assign xm_real[0][9] = data_in[36 * 16 +: 16];
-    assign xm_real[0][10] = data_in[20 * 16 +: 16];
-    assign xm_real[0][11] = data_in[52 * 16 +: 16];
-    assign xm_real[0][12] = data_in[12 * 16 +: 16];
-    assign xm_real[0][13] = data_in[44 * 16 +: 16];
-    assign xm_real[0][14] = data_in[28 * 16 +: 16];
-    assign xm_real[0][15] = data_in[60 * 16 +: 16];
-    assign xm_real[0][16] = data_in[2 * 16 +: 16];
-    assign xm_real[0][17] = data_in[34 * 16 +: 16];
-    assign xm_real[0][18] = data_in[18 * 16 +: 16];
-    assign xm_real[0][19] = data_in[50 * 16 +: 16];
-    assign xm_real[0][20] = data_in[10 * 16 +: 16];
-    assign xm_real[0][21] = data_in[42 * 16 +: 16];
-    assign xm_real[0][22] = data_in[26 * 16 +: 16];
-    assign xm_real[0][23] = data_in[58 * 16 +: 16];
-    assign xm_real[0][24] = data_in[6 * 16 +: 16];
-    assign xm_real[0][25] = data_in[38 * 16 +: 16];
-    assign xm_real[0][26] = data_in[22 * 16 +: 16];
-    assign xm_real[0][27] = data_in[54 * 16 +: 16];
-    assign xm_real[0][28] = data_in[14 * 16 +: 16];
-    assign xm_real[0][29] = data_in[46 * 16 +: 16];
-    assign xm_real[0][30] = data_in[30 * 16 +: 16];
-    assign xm_real[0][31] = data_in[62 * 16 +: 16];
-    assign xm_real[0][32] = data_in[1 * 16 +: 16];
-    assign xm_real[0][33] = data_in[33 * 16 +: 16];
-    assign xm_real[0][34] = data_in[17 * 16 +: 16];
-    assign xm_real[0][35] = data_in[49 * 16 +: 16];
-    assign xm_real[0][36] = data_in[9 * 16 +: 16];
-    assign xm_real[0][37] = data_in[41 * 16 +: 16];
-    assign xm_real[0][38] = data_in[25 * 16 +: 16];
-    assign xm_real[0][39] = data_in[57 * 16 +: 16];
-    assign xm_real[0][40] = data_in[5 * 16 +: 16];
-    assign xm_real[0][41] = data_in[37 * 16 +: 16];
-    assign xm_real[0][42] = data_in[21 * 16 +: 16];
-    assign xm_real[0][43] = data_in[53 * 16 +: 16];
-    assign xm_real[0][44] = data_in[13 * 16 +: 16];
-    assign xm_real[0][45] = data_in[45 * 16 +: 16];
-    assign xm_real[0][46] = data_in[29 * 16 +: 16];
-    assign xm_real[0][47] = data_in[61 * 16 +: 16];
-    assign xm_real[0][48] = data_in[3 * 16 +: 16];
-    assign xm_real[0][49] = data_in[35 * 16 +: 16];
-    assign xm_real[0][50] = data_in[19 * 16 +: 16];
-    assign xm_real[0][51] = data_in[51 * 16 +: 16];
-    assign xm_real[0][52] = data_in[11 * 16 +: 16];
-    assign xm_real[0][53] = data_in[43 * 16 +: 16];
-    assign xm_real[0][54] = data_in[27 * 16 +: 16];
-    assign xm_real[0][55] = data_in[59 * 16 +: 16];
-    assign xm_real[0][56] = data_in[7 * 16 +: 16];
-    assign xm_real[0][57] = data_in[39 * 16 +: 16];
-    assign xm_real[0][58] = data_in[23 * 16 +: 16];
-    assign xm_real[0][59] = data_in[55 * 16 +: 16];
-    assign xm_real[0][60] = data_in[15 * 16 +: 16];
-    assign xm_real[0][61] = data_in[47 * 16 +: 16];
-    assign xm_real[0][62] = data_in[31 * 16 +: 16];
-    assign xm_real[0][63] = data_in[63 * 16 +: 16];
+    assign xm_real[0][0] = data_in_real[0 * 16 +: 16];
+    assign xm_real[0][1] = data_in_real[32 * 16 +: 16];
+    assign xm_real[0][2] = data_in_real[16 * 16 +: 16];
+    assign xm_real[0][3] = data_in_real[48 * 16 +: 16];
+    assign xm_real[0][4] = data_in_real[8 * 16 +: 16];
+    assign xm_real[0][5] = data_in_real[40 * 16 +: 16];
+    assign xm_real[0][6] = data_in_real[24 * 16 +: 16];
+    assign xm_real[0][7] = data_in_real[56 * 16 +: 16];
+    assign xm_real[0][8] = data_in_real[4 * 16 +: 16];
+    assign xm_real[0][9] = data_in_real[36 * 16 +: 16];
+    assign xm_real[0][10] = data_in_real[20 * 16 +: 16];
+    assign xm_real[0][11] = data_in_real[52 * 16 +: 16];
+    assign xm_real[0][12] = data_in_real[12 * 16 +: 16];
+    assign xm_real[0][13] = data_in_real[44 * 16 +: 16];
+    assign xm_real[0][14] = data_in_real[28 * 16 +: 16];
+    assign xm_real[0][15] = data_in_real[60 * 16 +: 16];
+    assign xm_real[0][16] = data_in_real[2 * 16 +: 16];
+    assign xm_real[0][17] = data_in_real[34 * 16 +: 16];
+    assign xm_real[0][18] = data_in_real[18 * 16 +: 16];
+    assign xm_real[0][19] = data_in_real[50 * 16 +: 16];
+    assign xm_real[0][20] = data_in_real[10 * 16 +: 16];
+    assign xm_real[0][21] = data_in_real[42 * 16 +: 16];
+    assign xm_real[0][22] = data_in_real[26 * 16 +: 16];
+    assign xm_real[0][23] = data_in_real[58 * 16 +: 16];
+    assign xm_real[0][24] = data_in_real[6 * 16 +: 16];
+    assign xm_real[0][25] = data_in_real[38 * 16 +: 16];
+    assign xm_real[0][26] = data_in_real[22 * 16 +: 16];
+    assign xm_real[0][27] = data_in_real[54 * 16 +: 16];
+    assign xm_real[0][28] = data_in_real[14 * 16 +: 16];
+    assign xm_real[0][29] = data_in_real[46 * 16 +: 16];
+    assign xm_real[0][30] = data_in_real[30 * 16 +: 16];
+    assign xm_real[0][31] = data_in_real[62 * 16 +: 16];
+    assign xm_real[0][32] = data_in_real[1 * 16 +: 16];
+    assign xm_real[0][33] = data_in_real[33 * 16 +: 16];
+    assign xm_real[0][34] = data_in_real[17 * 16 +: 16];
+    assign xm_real[0][35] = data_in_real[49 * 16 +: 16];
+    assign xm_real[0][36] = data_in_real[9 * 16 +: 16];
+    assign xm_real[0][37] = data_in_real[41 * 16 +: 16];
+    assign xm_real[0][38] = data_in_real[25 * 16 +: 16];
+    assign xm_real[0][39] = data_in_real[57 * 16 +: 16];
+    assign xm_real[0][40] = data_in_real[5 * 16 +: 16];
+    assign xm_real[0][41] = data_in_real[37 * 16 +: 16];
+    assign xm_real[0][42] = data_in_real[21 * 16 +: 16];
+    assign xm_real[0][43] = data_in_real[53 * 16 +: 16];
+    assign xm_real[0][44] = data_in_real[13 * 16 +: 16];
+    assign xm_real[0][45] = data_in_real[45 * 16 +: 16];
+    assign xm_real[0][46] = data_in_real[29 * 16 +: 16];
+    assign xm_real[0][47] = data_in_real[61 * 16 +: 16];
+    assign xm_real[0][48] = data_in_real[3 * 16 +: 16];
+    assign xm_real[0][49] = data_in_real[35 * 16 +: 16];
+    assign xm_real[0][50] = data_in_real[19 * 16 +: 16];
+    assign xm_real[0][51] = data_in_real[51 * 16 +: 16];
+    assign xm_real[0][52] = data_in_real[11 * 16 +: 16];
+    assign xm_real[0][53] = data_in_real[43 * 16 +: 16];
+    assign xm_real[0][54] = data_in_real[27 * 16 +: 16];
+    assign xm_real[0][55] = data_in_real[59 * 16 +: 16];
+    assign xm_real[0][56] = data_in_real[7 * 16 +: 16];
+    assign xm_real[0][57] = data_in_real[39 * 16 +: 16];
+    assign xm_real[0][58] = data_in_real[23 * 16 +: 16];
+    assign xm_real[0][59] = data_in_real[55 * 16 +: 16];
+    assign xm_real[0][60] = data_in_real[15 * 16 +: 16];
+    assign xm_real[0][61] = data_in_real[47 * 16 +: 16];
+    assign xm_real[0][62] = data_in_real[31 * 16 +: 16];
+    assign xm_real[0][63] = data_in_real[63 * 16 +: 16];
 
-    generate
-    for (m = 0; m <= NOF_FFT_POINT - 1; m = m + 1) begin
-        assign xm_imag[0][m] = 'd0;
-    end
-    endgenerate
+    assign xm_imag[0][0] = data_in_imag[0 * 16 +: 16];
+    assign xm_imag[0][1] = data_in_imag[32 * 16 +: 16];
+    assign xm_imag[0][2] = data_in_imag[16 * 16 +: 16];
+    assign xm_imag[0][3] = data_in_imag[48 * 16 +: 16];
+    assign xm_imag[0][4] = data_in_imag[8 * 16 +: 16];
+    assign xm_imag[0][5] = data_in_imag[40 * 16 +: 16];
+    assign xm_imag[0][6] = data_in_imag[24 * 16 +: 16];
+    assign xm_imag[0][7] = data_in_imag[56 * 16 +: 16];
+    assign xm_imag[0][8] = data_in_imag[4 * 16 +: 16];
+    assign xm_imag[0][9] = data_in_imag[36 * 16 +: 16];
+    assign xm_imag[0][10] = data_in_imag[20 * 16 +: 16];
+    assign xm_imag[0][11] = data_in_imag[52 * 16 +: 16];
+    assign xm_imag[0][12] = data_in_imag[12 * 16 +: 16];
+    assign xm_imag[0][13] = data_in_imag[44 * 16 +: 16];
+    assign xm_imag[0][14] = data_in_imag[28 * 16 +: 16];
+    assign xm_imag[0][15] = data_in_imag[60 * 16 +: 16];
+    assign xm_imag[0][16] = data_in_imag[2 * 16 +: 16];
+    assign xm_imag[0][17] = data_in_imag[34 * 16 +: 16];
+    assign xm_imag[0][18] = data_in_imag[18 * 16 +: 16];
+    assign xm_imag[0][19] = data_in_imag[50 * 16 +: 16];
+    assign xm_imag[0][20] = data_in_imag[10 * 16 +: 16];
+    assign xm_imag[0][21] = data_in_imag[42 * 16 +: 16];
+    assign xm_imag[0][22] = data_in_imag[26 * 16 +: 16];
+    assign xm_imag[0][23] = data_in_imag[58 * 16 +: 16];
+    assign xm_imag[0][24] = data_in_imag[6 * 16 +: 16];
+    assign xm_imag[0][25] = data_in_imag[38 * 16 +: 16];
+    assign xm_imag[0][26] = data_in_imag[22 * 16 +: 16];
+    assign xm_imag[0][27] = data_in_imag[54 * 16 +: 16];
+    assign xm_imag[0][28] = data_in_imag[14 * 16 +: 16];
+    assign xm_imag[0][29] = data_in_imag[46 * 16 +: 16];
+    assign xm_imag[0][30] = data_in_imag[30 * 16 +: 16];
+    assign xm_imag[0][31] = data_in_imag[62 * 16 +: 16];
+    assign xm_imag[0][32] = data_in_imag[1 * 16 +: 16];
+    assign xm_imag[0][33] = data_in_imag[33 * 16 +: 16];
+    assign xm_imag[0][34] = data_in_imag[17 * 16 +: 16];
+    assign xm_imag[0][35] = data_in_imag[49 * 16 +: 16];
+    assign xm_imag[0][36] = data_in_imag[9 * 16 +: 16];
+    assign xm_imag[0][37] = data_in_imag[41 * 16 +: 16];
+    assign xm_imag[0][38] = data_in_imag[25 * 16 +: 16];
+    assign xm_imag[0][39] = data_in_imag[57 * 16 +: 16];
+    assign xm_imag[0][40] = data_in_imag[5 * 16 +: 16];
+    assign xm_imag[0][41] = data_in_imag[37 * 16 +: 16];
+    assign xm_imag[0][42] = data_in_imag[21 * 16 +: 16];
+    assign xm_imag[0][43] = data_in_imag[53 * 16 +: 16];
+    assign xm_imag[0][44] = data_in_imag[13 * 16 +: 16];
+    assign xm_imag[0][45] = data_in_imag[45 * 16 +: 16];
+    assign xm_imag[0][46] = data_in_imag[29 * 16 +: 16];
+    assign xm_imag[0][47] = data_in_imag[61 * 16 +: 16];
+    assign xm_imag[0][48] = data_in_imag[3 * 16 +: 16];
+    assign xm_imag[0][49] = data_in_imag[35 * 16 +: 16];
+    assign xm_imag[0][50] = data_in_imag[19 * 16 +: 16];
+    assign xm_imag[0][51] = data_in_imag[51 * 16 +: 16];
+    assign xm_imag[0][52] = data_in_imag[11 * 16 +: 16];
+    assign xm_imag[0][53] = data_in_imag[43 * 16 +: 16];
+    assign xm_imag[0][54] = data_in_imag[27 * 16 +: 16];
+    assign xm_imag[0][55] = data_in_imag[59 * 16 +: 16];
+    assign xm_imag[0][56] = data_in_imag[7 * 16 +: 16];
+    assign xm_imag[0][57] = data_in_imag[39 * 16 +: 16];
+    assign xm_imag[0][58] = data_in_imag[23 * 16 +: 16];
+    assign xm_imag[0][59] = data_in_imag[55 * 16 +: 16];
+    assign xm_imag[0][60] = data_in_imag[15 * 16 +: 16];
+    assign xm_imag[0][61] = data_in_imag[47 * 16 +: 16];
+    assign xm_imag[0][62] = data_in_imag[31 * 16 +: 16];
+    assign xm_imag[0][63] = data_in_imag[63 * 16 +: 16];
+
+
     
     // wnr
     generate
