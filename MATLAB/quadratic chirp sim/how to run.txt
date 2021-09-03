@@ -1,0 +1,2 @@
+1. Download all scripts
+2. Run fake_chirp_test.m
